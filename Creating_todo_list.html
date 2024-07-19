@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            justify-items: center;
+            margin: 20px;
+            
+        }
+        .main_todo_div_else{
+            height: 50px;
+            background-color: red;
+            color: white;
+            font-size: 30px;
+            list-style-type: none;
+        }
+        .main_todo_div{
+            list-style-type: none;
+            display: flex;
+            margin-top: 10px;
+            
+           
+            
+        }
+       
+        .main_todo_div table{
+            
+            border-collapse: collapse; /* Ensures borders do not have gaps between them */
+            /* border: 2px solid black; */
+        }
+        .main_todo_div li{
+            /* border: 2px solid black; */
+            padding: 8px; /* Adds some padding inside the cells */
+            padding-right: 100px;
+            width: 130px;
+            color: white;
+            font-size: 20px;
+        }  
+            
+           
+          
+        
+        .btn{
+            background-color: yellow;
+            padding: 10px 30px;
+            border-radius: 10px;
+            box-shadow: 3px 3px 10px greenyellow;
+           
+        }
+        /* .btn:hover{
+            transform: scale(1, 1.5);
+        } */
+        
+        .inputBtn{
+            padding: 10px 30px;
+            border-radius: 10px;
+            
+        }
+        .inputBtn:hover{
+            outline: 2px solid yellow;
+            box-shadow: 3px 3px 5px yellow;
+        }
+        .toDo{
+            color: white;
+            text-shadow: 2px 2px 5px yellow;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+       
+    </style>
+</head>
+
+<body>
+   
+    <form action="">
+        <div class="toDo">
+            <h1>
+                To Do List
+            </h1>
+        </div>
+        <div>
+            <input type="text" class="inputBtn" id="inputValue" autocomplete="off">
+            <button class="btn">Add Todo</button>
+        </div>
+        <section class="toDoListElement">
+           
+        </section>
+    </form>
+    <script>
+        let mainTodoElem = document.querySelector('.toDoListElement');
+        let inputValue = document.querySelector('#inputValue');
+
+
+        let getTodoListLocal = () => {
+            return JSON.parse(localStorage.getItem("youtubeTodo"));
+        };
+        local = getTodoListLocal() || [];
+        let addTodoListDynamicElement = (element) => {
+            let divElem = document.createElement("div");
+            divElem.classList.add("main_todo_div");
+            divElem.innerHTML = `<table>
+                    
+                    <tr>
+                        <th><li>${element}</li></th>
+                        <th><button class="deleteBtn">Delete</button></th>
+                    </tr>
+                </table> `;
+                let newElem = divElem.querySelector('.deleteBtn');
+                newElem.style.backgroundColor = "yellow";
+                newElem.style.borderRadius = "10px";
+
+                newElem.style.paddingTop = "10px";
+                newElem.style.paddingRight = "30px";
+                newElem.style.paddingBottom = "10px";
+                newElem.style.paddingLeft = "30px";
+                newElem.style.boxShadow = "2px 2px 20px yellow";
+                newElem.style.width = "100px";
+
+
+            
+            mainTodoElem.append(divElem);
+
+        }
+        let addTodoList = (e) => {
+            e.preventDefault();
+            
+           
+
+                let todoListValue = inputValue.value.trim();
+                
+                if(todoListValue != "" && !local.includes(todoListValue)){
+                local.push(todoListValue);
+                local = [...new Set(local)];
+                console.log(local);
+                // let divElem = document.createElement("div");
+                // divElem.classList.add("main_todo_div");
+                // divElem.innerHTML = `<li>${inputValue.value}</li> <button class="deleteBtn">Delete</button>`;
+                // mainTodoElem.append(divElem);
+                addTodoListDynamicElement(inputValue.value)
+                localStorage.setItem('youtubeTodo', JSON.stringify(local));
+                inputValue.value = "";
+            }
+            // else{
+            //     let divElem = document.createElement("div");
+            //     divElem.classList.add("main_todo_div_else");
+            //     divElem.innerHTML = `<li>You Cannot add element that is already in the list</li>`;
+            //     mainTodoElem.append(divElem);
+            //     inputValue.value = "";
+            // }
+
+        };
+        document.querySelector(".btn").addEventListener('click', (e) => {
+            addTodoList(e);
+        });
+        let showTodoList = () => {
+            console.log(local);
+            local.forEach(element => {
+                addTodoListDynamicElement(element);
+
+            });
+        }
+        showTodoList();
+        removeTodoElem = (e)=>{
+            
+            if (e.target.classList.contains('deleteBtn')) {
+                let todoItem = e.target.closest('.main_todo_div');
+                let todoText = todoItem.querySelector('li').textContent;
+                local = local.filter(item => item !== todoText);
+                localStorage.setItem('youtubeTodo', JSON.stringify(local));
+         
+                todoItem.remove();
+            }
+        }
+        mainTodoElem.addEventListener('click', (e)=>{
+            e.preventDefault();
+            removeTodoElem(e);
+        })
+    </script>
+</body>
+
+</html>
